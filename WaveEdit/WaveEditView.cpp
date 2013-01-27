@@ -21,11 +21,11 @@
 
 IMPLEMENT_DYNCREATE(CWaveEditView, CView)
 
-BEGIN_MESSAGE_MAP(CWaveEditView, CView)
+BEGIN_MESSAGE_MAP(CWaveEditView, CScrollView)
 	// Standard printing commands
-	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
+	ON_COMMAND(ID_FILE_PRINT, &CScrollView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CScrollView::OnFilePrint)
+	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CScrollView::OnFilePrintPreview)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
@@ -49,7 +49,6 @@ BOOL CWaveEditView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
 	return CView::PreCreateWindow(cs);
 }
 
@@ -73,7 +72,7 @@ void CWaveEditView::OnDraw(CDC* pDC)
     GetClientRect(rect);
 
     // Set color in pen and brush for wave
-    COLORREF color = RGB( 200, 0, 0 );
+    COLORREF color = RGB( 50, 225, 0 );
     CPen pen2( PS_SOLID, 0, color );
     pDC->SelectObject( &pen2 );
     CBrush brush2(color);
@@ -87,11 +86,23 @@ void CWaveEditView::OnDraw(CDC* pDC)
 
     // Draw the wave
     pDC->MoveTo(0,0);
-    int x;
+    /*int x;
     for (x=0; x < rect.Width(); x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
         float val = wave->get_sample((int) (x*wave->lastSample/rect.Width()) );
+
+        // We need to fit the sound also in the y axis. The y axis goes from 0 in the
+        // top of the window to rect.Height at the bottom. The sound goes from -32768 to 32767
+        // we scale it in that way.
+        int y = (int) ((val+32768) * (rect.Height()-1) / (32767+32768));
+        pDC->LineTo(x,rect.Height() - y);
+    }*/
+	unsigned int x;
+	for (x=0; x < wave->lastSample/200; x++) {
+        // Assuming the whole file will be fit in the window, for every x value in the window
+        // we need to find the equivalent sample in the wave file.
+        float val = wave->get_sample((int) (x*200) );
 
         // We need to fit the sound also in the y axis. The y axis goes from 0 in the
         // top of the window to rect.Height at the bottom. The sound goes from -32768 to 32767

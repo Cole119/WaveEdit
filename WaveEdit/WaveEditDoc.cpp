@@ -153,6 +153,7 @@ void CWaveEditDoc::OnToolsSpeedup()
 {
 	WaveFile *newWave = wave.multiply_freq(2, 0);
 	wave = *newWave;
+	delete newWave;
 }
 
 
@@ -160,6 +161,7 @@ void CWaveEditDoc::OnToolsSlowdown()
 {
 	WaveFile *newWave = wave.multiply_freq(0.5, 0);
 	wave = *newWave;
+	delete newWave;
 }
 
 
@@ -167,4 +169,5 @@ void CWaveEditDoc::OnToolsEcho()
 {
 	WaveFile *newWave = wave.echo(0.5, 750);
 	wave = *newWave;
+	delete newWave;
 }
