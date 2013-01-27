@@ -61,7 +61,7 @@ void CWaveEditView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	WaveFile * wave = &pDoc->wave;
+	WaveFile * wave = pDoc->wave;
 
     if (wave->hdr==NULL) {
         return;

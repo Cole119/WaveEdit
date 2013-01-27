@@ -74,7 +74,9 @@ WaveFile::WaveFile( int numChannels, int sampleRate, int bitsPerSample) {
 // Destructor
 WaveFile::~WaveFile(void)
 {
-
+	if(hdr){
+		free(hdr);
+	}
 }
 
 // Read a wave file from opoened file f
@@ -142,6 +144,12 @@ WaveFile::play()
     }
 
     PlaySoundW((LPCWSTR)hdr, NULL, SND_MEMORY | SND_ASYNC | SND_NODEFAULT);
+}
+
+void
+WaveFile::stop()
+{
+	PlaySoundW(NULL, 0, 0);
 }
 
 // Add a new sample at the end of the wave file
@@ -307,5 +315,15 @@ WaveFile::echo(float echoAmount, float delayms)
     w2->updateHeader();
 
     return w2;
+
+}
+
+void
+WaveFile::decreaseVolume(double amount){
+
+}
+
+void
+WaveFile::increaseVolume(double amount){
 
 }

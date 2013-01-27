@@ -26,6 +26,7 @@ BEGIN_MESSAGE_MAP(CWaveEditDoc, CDocument)
 	ON_COMMAND(ID_TOOLS_SPEEDUP, &CWaveEditDoc::OnToolsSpeedup)
 	ON_COMMAND(ID_TOOLS_SLOWDOWN, &CWaveEditDoc::OnToolsSlowdown)
 	ON_COMMAND(ID_TOOLS_ECHO, &CWaveEditDoc::OnToolsEcho)
+	ON_COMMAND(ID_TOOLS_STOP, &CWaveEditDoc::OnToolsStop)
 END_MESSAGE_MAP()
 
 
@@ -34,7 +35,7 @@ END_MESSAGE_MAP()
 CWaveEditDoc::CWaveEditDoc()
 {
 	// TODO: add one-time construction code here
-
+	wave = new WaveFile();
 }
 
 CWaveEditDoc::~CWaveEditDoc()
@@ -66,7 +67,7 @@ void CWaveEditDoc::Serialize(CArchive& ar)
 	else
 	{
 		// TODO: add loading code here
-		wave.read(ar.GetFile());
+		wave->read(ar.GetFile());
         //wave.play();
 	}
 }
@@ -145,29 +146,35 @@ void CWaveEditDoc::Dump(CDumpContext& dc) const
 
 void CWaveEditDoc::OnToolsPlay()
 {
-	wave.play();
+	wave->play();
 }
 
 
 void CWaveEditDoc::OnToolsSpeedup()
 {
-	WaveFile *newWave = wave.multiply_freq(2, 0);
-	wave = *newWave;
-	delete newWave;
+	WaveFile *newWave = wave->multiply_freq(2, 0);
+	delete wave;
+	wave = newWave;
 }
 
 
 void CWaveEditDoc::OnToolsSlowdown()
 {
-	WaveFile *newWave = wave.multiply_freq(0.5, 0);
-	wave = *newWave;
-	delete newWave;
+	WaveFile *newWave = wave->multiply_freq(0.5, 0);
+	delete wave;
+	wave = newWave;
 }
 
 
 void CWaveEditDoc::OnToolsEcho()
 {
-	WaveFile *newWave = wave.echo(0.5, 750);
-	wave = *newWave;
-	delete newWave;
+	WaveFile *newWave = wave->echo(0.5, 750);
+	delete wave;
+	wave = newWave;
+}
+
+
+void CWaveEditDoc::OnToolsStop()
+{
+	wave->stop();
 }
