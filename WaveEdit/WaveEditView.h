@@ -8,6 +8,7 @@
 class CWaveEditView : public CScrollView
 {
 private:
+	double zoom;
 	bool mousePressed;
 	int startSelection;
 	int endSelection;
@@ -51,6 +52,9 @@ public:
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnEditCut();
+	afx_msg void OnZoominX1();
+	afx_msg void OnZoominX2();
+	afx_msg void OnZoominX5();
 };
 
 #ifndef _DEBUG  // debug version in WaveEditView.cpp

@@ -30,12 +30,16 @@ BEGIN_MESSAGE_MAP(CWaveEditView, CScrollView)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_COMMAND(ID_EDIT_CUT, &CWaveEditView::OnEditCut)
+	ON_COMMAND(ID_ZOOMIN_X1, &CWaveEditView::OnZoominX1)
+	ON_COMMAND(ID_ZOOMIN_X2, &CWaveEditView::OnZoominX2)
+	ON_COMMAND(ID_ZOOMIN_X5, &CWaveEditView::OnZoominX5)
 END_MESSAGE_MAP()
 
 // CWaveEditView construction/destruction
 
 CWaveEditView::CWaveEditView()
 {
+	zoom = 1;
 	startSelection = 0;
 	endSelection = 0;
 	mousePressed = false;
@@ -86,19 +90,19 @@ void CWaveEditView::OnDraw(CDC* pDC)
 
     // Draw the wave
     pDC->MoveTo(0,0);
-    /*int x;
-    for (x=0; x < rect.Width(); x++) {
+    int x;
+    for (x=0; x < zoom*rect.Width(); x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
-        float val = wave->get_sample((int) (x*wave->lastSample/rect.Width()) );
+        float val = wave->get_sample((int) (zoom*x*wave->lastSample/rect.Width()) );
 
         // We need to fit the sound also in the y axis. The y axis goes from 0 in the
         // top of the window to rect.Height at the bottom. The sound goes from -32768 to 32767
         // we scale it in that way.
         int y = (int) ((val+32768) * (rect.Height()-1) / (32767+32768));
         pDC->LineTo(x,rect.Height() - y);
-    }*/
-	unsigned int x;
+    }
+	/*unsigned int x;
 	for (x=0; x < wave->lastSample/200; x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
@@ -109,7 +113,7 @@ void CWaveEditView::OnDraw(CDC* pDC)
         // we scale it in that way.
         int y = (int) ((val+32768) * (rect.Height()-1) / (32767+32768));
         pDC->LineTo(x,rect.Height() - y);
-    }
+    }*/
 }
 
 
@@ -158,9 +162,13 @@ CWaveEditView::OnInitialUpdate()
     CScrollView::OnInitialUpdate();
 
     // Initial scroll sizes
+	CRect rect;
+    GetClientRect(rect);
     CSize sizeTotal;
-    sizeTotal.cx = 10000;
-    sizeTotal.cy = 10000;
+    /*sizeTotal.cx = 10000;
+    sizeTotal.cy = 10000;*/
+	sizeTotal.cx = rect.Width();
+	sizeTotal.cy = rect.Height();
     SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
@@ -237,4 +245,25 @@ void CWaveEditView::OnEditCut()
 
     // Update window
     this->RedrawWindow();*/
+}
+
+
+void CWaveEditView::OnZoominX1()
+{
+	zoom = zoom*1.5;
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnZoominX2()
+{
+	zoom = zoom*2;
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnZoominX5()
+{
+	zoom = zoom*5;
+	RedrawWindow();
 }

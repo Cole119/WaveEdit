@@ -159,6 +159,12 @@ BEGIN
     BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        POPUP "Zoom In"
+        BEGIN
+            MENUITEM "x1.5",                        ID_ZOOMIN_X1
+            MENUITEM "x2",                          ID_ZOOMIN_X2
+            MENUITEM "x5",                          ID_ZOOMIN_X5
+        END
     END
     POPUP "Tools"
     BEGIN
