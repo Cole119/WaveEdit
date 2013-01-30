@@ -318,6 +318,33 @@ WaveFile::echo(float echoAmount, float delayms)
 
 }
 
+WaveFile *
+WaveFile::get_fragment(double start, double end){
+	WaveFile * fragment = new WaveFile(numChannels, sampleRate, bitsPerSample);
+	for(int i=start; i<end; i++){
+		fragment->add_sample(get_sample(i));
+	}
+	
+	fragment->updateHeader();
+	return fragment;
+}
+
+WaveFile *
+WaveFile::remove_fragment(double start, double end){
+	WaveFile * fragment = new WaveFile(numChannels, sampleRate, bitsPerSample);
+	for(int i=0; i<lastSample; i++){
+		if(i>start && i<end){
+			i = end;
+		}
+		else {
+			fragment->add_sample(get_sample(i));
+		}
+	}
+	
+	fragment->updateHeader();
+	return fragment;
+}
+
 void
 WaveFile::decreaseVolume(double amount){
 

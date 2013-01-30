@@ -209,13 +209,13 @@ void CWaveEditView::OnMouseMove(UINT nFlags, CPoint point)
 
 void CWaveEditView::OnEditCut()
 {
-	/*CWaveEditDoc* pDoc = GetDocument();
+	CWaveEditDoc* pDoc = GetDocument();
     
     ASSERT_VALID(pDoc);
     if (!pDoc)
         return;
 
-    WaveFile * wave = &pDoc->wave;
+    WaveFile * wave = pDoc->wave;
 
     if (wave->hdr==NULL) {
         return;
@@ -231,8 +231,10 @@ void CWaveEditView::OnEditCut()
     // Scale the start and end of the selection.
     double endms = (1000.0 * wave->lastSample /wave->sampleRate) * this->endSelection/rect.Width();
     
-    // Ciopy first the fragment
-    clipboard = wave->get_fragment(startms, endms);
+	// Clear the clipboard
+	delete theApp.clipboard;
+    // Copy first the fragment
+    theApp.clipboard = wave->get_fragment(startms, endms);
 
     // Copy the clipboard
     WaveFile * w2 = wave->remove_fragment(startms, endms);
@@ -244,7 +246,7 @@ void CWaveEditView::OnEditCut()
     pDoc->wave = w2;
 
     // Update window
-    this->RedrawWindow();*/
+    this->RedrawWindow();
 }
 
 

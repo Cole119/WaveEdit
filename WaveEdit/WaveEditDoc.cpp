@@ -40,6 +40,7 @@ CWaveEditDoc::CWaveEditDoc()
 
 CWaveEditDoc::~CWaveEditDoc()
 {
+	delete wave;
 }
 
 BOOL CWaveEditDoc::OnNewDocument()

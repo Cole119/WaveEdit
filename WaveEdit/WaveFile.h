@@ -93,6 +93,9 @@ public:
     // delayms is the delay of the echo added to the original.
     WaveFile * echo(float echoAmount, float delayms);
 
+	WaveFile * get_fragment(double start, double end);
+	WaveFile * remove_fragment(double start, double end);
+
 	void decreaseVolume(double amount);
 	void increaseVolume(double amount);
 };

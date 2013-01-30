@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"       // main symbols
-
+#include "WaveFile.h"
 
 // CWaveEditApp:
 // See WaveEdit.cpp for the implementation of this class
@@ -18,7 +18,7 @@ class CWaveEditApp : public CWinApp
 {
 public:
 	CWaveEditApp();
-
+	WaveFile * clipboard;
 
 // Overrides
 public:
