@@ -95,6 +95,7 @@ public:
 
 	WaveFile * get_fragment(double start, double end);
 	WaveFile * remove_fragment(double start, double end);
+	WaveFile * insert_fragment(WaveFile * fragment, int index);
 
 	void decreaseVolume(double amount);
 	void increaseVolume(double amount);

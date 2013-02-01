@@ -55,6 +55,8 @@ public:
 	afx_msg void OnZoominX1();
 	afx_msg void OnZoominX2();
 	afx_msg void OnZoominX5();
+	afx_msg void OnEditCopy();
+	afx_msg void OnEditPaste();
 };
 
 #ifndef _DEBUG  // debug version in WaveEditView.cpp

@@ -345,6 +345,22 @@ WaveFile::remove_fragment(double start, double end){
 	return fragment;
 }
 
+WaveFile *
+WaveFile::insert_fragment(WaveFile * fragment, int index){
+	WaveFile * wave = new WaveFile(numChannels, sampleRate, bitsPerSample);
+	int myCounter, fragmentCounter;
+	for(myCounter = 0;myCounter < index;myCounter++){
+		wave->add_sample(get_sample(myCounter));
+	}
+	for(fragmentCounter=0;fragmentCounter<fragment->lastSample;fragmentCounter++){
+		wave->add_sample(fragment->get_sample(fragmentCounter));
+	}
+	for(;myCounter<lastSample;myCounter++){
+		wave->add_sample(get_sample(myCounter));
+	}
+	return wave;
+}
+
 void
 WaveFile::decreaseVolume(double amount){
 
