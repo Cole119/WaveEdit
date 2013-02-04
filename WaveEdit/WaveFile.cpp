@@ -352,12 +352,13 @@ WaveFile::insert_fragment(WaveFile * fragment, int index){
 	for(myCounter = 0;myCounter < index;myCounter++){
 		wave->add_sample(get_sample(myCounter));
 	}
-	for(fragmentCounter=0;fragmentCounter<fragment->lastSample;fragmentCounter++){
+	for(fragmentCounter = 0;fragmentCounter < fragment->lastSample;fragmentCounter++){
 		wave->add_sample(fragment->get_sample(fragmentCounter));
 	}
 	for(;myCounter<lastSample;myCounter++){
 		wave->add_sample(get_sample(myCounter));
 	}
+	wave->updateHeader();
 	return wave;
 }
 

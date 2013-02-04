@@ -97,7 +97,7 @@ void CWaveEditView::OnDraw(CDC* pDC)
 
     // Draw the wave
     pDC->MoveTo(0,0);
-    int x;
+    /*int x;
     for (x=0; x < zoom*rect.Width(); x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
@@ -108,19 +108,23 @@ void CWaveEditView::OnDraw(CDC* pDC)
         // we scale it in that way.
         int y = (int) ((val+32768) * (rect.Height()-1) / (32767+32768));
         pDC->LineTo(x,rect.Height() - y);
-    }
-	/*unsigned int x;
-	for (x=0; x < wave->lastSample/200; x++) {
+    }*/
+	unsigned int x;
+	for (x=0; x < zoom*wave->lastSample/50; x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
-        float val = wave->get_sample((int) (x*200) );
+        float val = wave->get_sample((int) (x*50/zoom) );
 
         // We need to fit the sound also in the y axis. The y axis goes from 0 in the
         // top of the window to rect.Height at the bottom. The sound goes from -32768 to 32767
         // we scale it in that way.
         int y = (int) ((val+32768) * (rect.Height()-1) / (32767+32768));
         pDC->LineTo(x,rect.Height() - y);
-    }*/
+    }
+
+	CSize sizeTotal;
+	sizeTotal.cx = x;
+    SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
 
@@ -174,8 +178,9 @@ CWaveEditView::OnInitialUpdate()
     CSize sizeTotal;
     /*sizeTotal.cx = 10000;
     sizeTotal.cy = 10000;*/
-	sizeTotal.cx = rect.Width();
-	sizeTotal.cy = rect.Height();
+	//sizeTotal.cx = rect.Width();
+	//sizeTotal.cx = 2000;
+	//sizeTotal.cy = rect.Height();
     SetScrollSizes(MM_TEXT, sizeTotal);
 }
 
@@ -186,8 +191,9 @@ void CWaveEditView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	mousePressed = true;
 
-    startSelection = point.x;
-    endSelection = point.x;
+	CPoint scrollbarPos = GetDeviceScrollPosition();
+    startSelection = point.x + scrollbarPos.x;
+    endSelection = point.x + scrollbarPos.x;
 
 	CScrollView::OnLButtonDown(nFlags, point);
 }
@@ -196,7 +202,14 @@ void CWaveEditView::OnLButtonDown(UINT nFlags, CPoint point)
 void CWaveEditView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	mousePressed = false;
-    endSelection = point.x;
+
+	CPoint scrollbarPos = GetDeviceScrollPosition();
+    endSelection = point.x + scrollbarPos.x;
+	if(endSelection < startSelection){
+		int temp = endSelection;
+		endSelection = startSelection;
+		startSelection = temp;
+	}
     RedrawWindow();
 
 	CScrollView::OnLButtonUp(nFlags, point);
@@ -206,7 +219,8 @@ void CWaveEditView::OnLButtonUp(UINT nFlags, CPoint point)
 void CWaveEditView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (mousePressed) {
-        endSelection = point.x;
+		CPoint scrollbarPos = GetDeviceScrollPosition();
+        endSelection = point.x + scrollbarPos.x;
         RedrawWindow();
     }
 
@@ -232,13 +246,15 @@ void CWaveEditView::OnEditCut()
     CRect rect;
     GetClientRect(rect);
 
+	CSize size = GetTotalSize();
+
     // Scale the start and end of the selection.
     //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
-	double startms = wave->lastSample * (double)this->startSelection/(double)rect.Width();
+	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
 
     // Scale the start and end of the selection.
     //double endms = (1000.0 * wave->lastSample /wave->sampleRate) * this->endSelection/rect.Width();
-	double endms = wave->lastSample * (double)this->endSelection/(double)rect.Width();
+	double endms = wave->lastSample * (double)this->endSelection/(double)size.cx;
     
 	// Clear the clipboard
 	delete theApp.clipboard;
@@ -254,6 +270,7 @@ void CWaveEditView::OnEditCut()
     // Substitute old wave with new one
     pDoc->wave = w2;
 
+	endSelection = startSelection;
     // Update window
     this->RedrawWindow();
 }
@@ -276,13 +293,15 @@ void CWaveEditView::OnEditCopy()
     CRect rect;
     GetClientRect(rect);
 
+	CSize size = GetTotalSize();
+
     // Scale the start and end of the selection.
     //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
-	double startms = wave->lastSample * (double)this->startSelection/(double)rect.Width();
+	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
 
     // Scale the start and end of the selection.
     //double endms = (1000.0 * wave->lastSample /wave->sampleRate) * this->endSelection/rect.Width();
-	double endms = wave->lastSample * (double)this->endSelection/(double)rect.Width();
+	double endms = wave->lastSample * (double)this->endSelection/(double)size.cx;
     
 	// Clear the clipboard
 	delete theApp.clipboard;
@@ -307,10 +326,11 @@ void CWaveEditView::OnEditPaste()
     // Get dimensions of the window.
     CRect rect;
     GetClientRect(rect);
+	CSize size = GetTotalSize();
 
     // Scale the start and end of the selection.
     //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
-	double startms = wave->lastSample * (double)this->startSelection/(double)rect.Width();
+	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
 	WaveFile * wave2 = wave->insert_fragment(theApp.clipboard, startms);
 	delete wave;
 	pDoc->wave = wave2;
