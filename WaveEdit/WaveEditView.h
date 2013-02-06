@@ -20,6 +20,7 @@ protected: // create from serialization only
 // Attributes
 public:
 	CWaveEditDoc* GetDocument() const;
+	void GetSelection(int& begin, int& end) const;
 
 // Operations
 public:
@@ -57,6 +58,7 @@ public:
 	afx_msg void OnZoominX5();
 	afx_msg void OnEditCopy();
 	afx_msg void OnEditPaste();
+	afx_msg void OnToolsPlay();
 };
 
 #ifndef _DEBUG  // debug version in WaveEditView.cpp

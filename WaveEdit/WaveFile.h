@@ -85,6 +85,9 @@ public:
     // If durationms==0 then use the whole wave file.
     WaveFile * multiply_freq(double k, int durationms);
 
+	//Create a new wave file that is k times the frequency rate of the original from indices begin to end.
+	WaveFile * multiply_freq(double k, int begin, int end);
+
     // Append a wave file src to the end of this wave file. 
     void append_wave(WaveFile * src);
 

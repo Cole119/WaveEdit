@@ -275,6 +275,41 @@ WaveFile::multiply_freq(double k, int durationms)
     return w2;
 }
 
+// Create a new wave file that is k times the frequencyrate of the original
+WaveFile * 
+WaveFile::multiply_freq(double k, int begin, int end)
+{
+    WaveFile * w2 = new WaveFile(numChannels, sampleRate, 
+        bitsPerSample);
+	if(end > lastSample){
+		end = lastSample;
+	}
+	if(begin >= end){
+		begin = end;
+	}
+
+    double i = 0;
+    if (k != 0) {
+		for(i=0;i<begin;i++){
+			int value = get_sample((int) i);
+			w2->add_sample(value);
+		}
+		for(;i<end;i+=k){
+			int value = get_sample((int) i);
+            w2->add_sample(value);
+		}
+		for(;i<lastSample;i++){
+			int value = get_sample((int) i);
+			w2->add_sample(value);
+		}
+    }
+
+    // Write wav header
+    w2->updateHeader();
+
+    return w2;
+}
+
 // Append a wave file src to the end of this wave file. 
 void 
 WaveFile::append_wave(WaveFile * src) {

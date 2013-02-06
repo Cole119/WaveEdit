@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CWaveEditView, CScrollView)
 	ON_COMMAND(ID_ZOOMIN_X5, &CWaveEditView::OnZoominX5)
 	ON_COMMAND(ID_EDIT_COPY, &CWaveEditView::OnEditCopy)
 	ON_COMMAND(ID_EDIT_PASTE, &CWaveEditView::OnEditPaste)
+	ON_COMMAND(ID_TOOLS_PLAY, &CWaveEditView::OnToolsPlay)
 END_MESSAGE_MAP()
 
 // CWaveEditView construction/destruction
@@ -176,12 +177,32 @@ CWaveEditView::OnInitialUpdate()
 	CRect rect;
     GetClientRect(rect);
     CSize sizeTotal;
+	CWaveEditDoc *doc = GetDocument();
+	doc->SetView(this);
     /*sizeTotal.cx = 10000;
     sizeTotal.cy = 10000;*/
 	//sizeTotal.cx = rect.Width();
 	//sizeTotal.cx = 2000;
 	//sizeTotal.cy = rect.Height();
     SetScrollSizes(MM_TEXT, sizeTotal);
+}
+
+void CWaveEditView::GetSelection(int& begin, int& end) const{
+	CWaveEditDoc* pDoc = GetDocument();
+    
+    ASSERT_VALID(pDoc);
+    if (!pDoc)
+        return;
+
+    WaveFile * wave = pDoc->wave;
+
+    if (wave->hdr==NULL) {
+        return;
+    }
+	CSize size = GetTotalSize();
+
+	begin = wave->lastSample * (double)this->startSelection/(double)size.cx;
+	end = wave->lastSample * (double)this->endSelection/(double)size.cx;
 }
 
 // CWaveEditView message handlers
@@ -355,4 +376,11 @@ void CWaveEditView::OnZoominX5()
 {
 	zoom = zoom*5;
 	RedrawWindow();
+}
+
+
+void CWaveEditView::OnToolsPlay()
+{
+	CWaveEditDoc *doc = GetDocument();
+	doc->Play();
 }

@@ -11,13 +11,15 @@ class CWaveEditDoc : public CDocument
 {
 	friend class CWaveEditView;
     WaveFile *wave;
+	CWaveEditView *view;
 protected: // create from serialization only
 	CWaveEditDoc();
 	DECLARE_DYNCREATE(CWaveEditDoc)
 
 // Attributes
 public:
-
+	void SetView(CWaveEditView *view);
+	void Play();
 // Operations
 public:
 
@@ -49,7 +51,6 @@ protected:
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
 public:
-	afx_msg void OnToolsPlay();
 	afx_msg void OnToolsSpeedup();
 	afx_msg void OnToolsSlowdown();
 	afx_msg void OnToolsEcho();

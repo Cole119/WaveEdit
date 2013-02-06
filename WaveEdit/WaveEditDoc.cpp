@@ -22,7 +22,6 @@
 IMPLEMENT_DYNCREATE(CWaveEditDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CWaveEditDoc, CDocument)
-	ON_COMMAND(ID_TOOLS_PLAY, &CWaveEditDoc::OnToolsPlay)
 	ON_COMMAND(ID_TOOLS_SPEEDUP, &CWaveEditDoc::OnToolsSpeedup)
 	ON_COMMAND(ID_TOOLS_SLOWDOWN, &CWaveEditDoc::OnToolsSlowdown)
 	ON_COMMAND(ID_TOOLS_ECHO, &CWaveEditDoc::OnToolsEcho)
@@ -53,8 +52,6 @@ BOOL CWaveEditDoc::OnNewDocument()
 
 	return TRUE;
 }
-
-
 
 
 // CWaveEditDoc serialization
@@ -141,11 +138,15 @@ void CWaveEditDoc::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
+void CWaveEditDoc::SetView(CWaveEditView *view){
+	this->view = view;
+}
+
 
 // CWaveEditDoc commands
 
 
-void CWaveEditDoc::OnToolsPlay()
+void CWaveEditDoc::Play()
 {
 	wave->play();
 }
@@ -153,6 +154,10 @@ void CWaveEditDoc::OnToolsPlay()
 
 void CWaveEditDoc::OnToolsSpeedup()
 {
+	//WaveFile *newWave = wave->multiply_freq(2, 0);
+	int begin = 0;
+	int end = 0;
+	//view->GetSelection(begin, end);
 	WaveFile *newWave = wave->multiply_freq(2, 0);
 	delete wave;
 	wave = newWave;
