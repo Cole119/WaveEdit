@@ -36,6 +36,12 @@ BEGIN_MESSAGE_MAP(CWaveEditView, CScrollView)
 	ON_COMMAND(ID_EDIT_COPY, &CWaveEditView::OnEditCopy)
 	ON_COMMAND(ID_EDIT_PASTE, &CWaveEditView::OnEditPaste)
 	ON_COMMAND(ID_TOOLS_PLAY, &CWaveEditView::OnToolsPlay)
+	ON_COMMAND(ID_TOOLS_SPEEDUP, &CWaveEditView::OnToolsSpeedup)
+	ON_COMMAND(ID_TOOLS_SLOWDOWN, &CWaveEditView::OnToolsSlowdown)
+	ON_COMMAND(ID_TOOLS_ECHO, &CWaveEditView::OnToolsEcho)
+	ON_COMMAND(ID_ZOOMOUT_X1, &CWaveEditView::OnZoomoutX1)
+	ON_COMMAND(ID_ZOOMOUT_X2, &CWaveEditView::OnZoomoutX2)
+	ON_COMMAND(ID_ZOOMOUT_X5, &CWaveEditView::OnZoomoutX5)
 END_MESSAGE_MAP()
 
 // CWaveEditView construction/destruction
@@ -111,10 +117,10 @@ void CWaveEditView::OnDraw(CDC* pDC)
         pDC->LineTo(x,rect.Height() - y);
     }*/
 	unsigned int x;
-	for (x=0; x < zoom*wave->lastSample/50; x++) {
+	for (x=0; x < zoom*wave->lastSample/drawScale; x++) {
         // Assuming the whole file will be fit in the window, for every x value in the window
         // we need to find the equivalent sample in the wave file.
-        float val = wave->get_sample((int) (x*50/zoom) );
+        float val = wave->get_sample((int) (x*drawScale/zoom) );
 
         // We need to fit the sound also in the y axis. The y axis goes from 0 in the
         // top of the window to rect.Height at the bottom. The sound goes from -32768 to 32767
@@ -175,10 +181,13 @@ CWaveEditView::OnInitialUpdate()
 
     // Initial scroll sizes
 	CRect rect;
-    GetClientRect(rect);
     CSize sizeTotal;
 	CWaveEditDoc *doc = GetDocument();
+	WaveFile * wave = doc->wave;
 	doc->SetView(this);
+
+	GetClientRect(rect);
+	drawScale = wave->lastSample/rect.Width();
     /*sizeTotal.cx = 10000;
     sizeTotal.cy = 10000;*/
 	//sizeTotal.cx = rect.Width();
@@ -358,6 +367,44 @@ void CWaveEditView::OnEditPaste()
 	RedrawWindow();
 }
 
+
+void CWaveEditView::OnToolsPlay()
+{
+	CWaveEditDoc *doc = GetDocument();
+	doc->Play();
+}
+
+
+void CWaveEditView::OnToolsSpeedup()
+{
+	CWaveEditDoc *doc = GetDocument();
+	int start, end;
+	GetSelection(start, end);
+	doc->Speedup(start, end);
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnToolsSlowdown()
+{
+	CWaveEditDoc *doc = GetDocument();
+	int start, end;
+	GetSelection(start, end);
+	doc->Slowdown(start, end);
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnToolsEcho()
+{
+	CWaveEditDoc *doc = GetDocument();
+	int start, end;
+	GetSelection(start, end);
+	doc->Echo(start, end);
+	RedrawWindow();
+}
+
+
 void CWaveEditView::OnZoominX1()
 {
 	zoom = zoom*1.5;
@@ -379,8 +426,22 @@ void CWaveEditView::OnZoominX5()
 }
 
 
-void CWaveEditView::OnToolsPlay()
+void CWaveEditView::OnZoomoutX1()
 {
-	CWaveEditDoc *doc = GetDocument();
-	doc->Play();
+	zoom = zoom/1.5;
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnZoomoutX2()
+{
+	zoom = zoom/2.0;
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnZoomoutX5()
+{
+	zoom = zoom/5.0;
+	RedrawWindow();
 }

@@ -16,14 +16,18 @@
 #define ID_ZOOMIN_X1                    32777
 #define ID_ZOOMIN_X2                    32778
 #define ID_ZOOMIN_X5                    32779
+#define ID_VIEW_ZOOMOUT                 32780
+#define ID_ZOOMOUT_X1                   32781
+#define ID_ZOOMOUT_X2                   32782
+#define ID_ZOOMOUT_X5                   32783
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_COMMAND_VALUE         32784
+#define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

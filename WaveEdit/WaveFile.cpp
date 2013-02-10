@@ -279,13 +279,19 @@ WaveFile::multiply_freq(double k, int durationms)
 WaveFile * 
 WaveFile::multiply_freq(double k, int begin, int end)
 {
-    WaveFile * w2 = new WaveFile(numChannels, sampleRate, 
-        bitsPerSample);
+    WaveFile * w2 = new WaveFile(numChannels, sampleRate, bitsPerSample);
+	if(begin < 0){
+		begin = 0;
+	}
 	if(end > lastSample){
 		end = lastSample;
 	}
 	if(begin >= end){
 		begin = end;
+	}
+	if(begin == end){
+		begin = 0;
+		end = lastSample;
 	}
 
     double i = 0;
@@ -346,6 +352,58 @@ WaveFile::echo(float echoAmount, float delayms)
         w2->add_sample((int) ((1-echoAmount)*value+ echoAmount * delayed));
         t++;
     }
+
+    w2->updateHeader();
+
+    return w2;
+
+}
+
+WaveFile * 
+WaveFile::echo(float echoAmount, float delayms, int begin, int end)
+{
+    WaveFile * w2 = new WaveFile(numChannels, sampleRate, bitsPerSample);
+
+	if(begin < 0){
+		begin = 0;
+	}
+	if(end > lastSample){
+		end = lastSample;
+	}
+	if(begin >= end){
+		begin = end;
+	}
+	if(begin == end){
+		begin = 0;
+		end = lastSample;
+	}
+
+    int i = 0;
+    int t = 0;
+
+    int delayInSamples = sampleRate * (delayms / 1000);
+	//TRACE("t-delayInSamples: %d\n", t-delayInSamples);
+	for(t=0;t<begin;t++){
+		int value = get_sample((int) t);
+		w2->add_sample(value);
+	}
+    while (t < end+delayInSamples) {
+        float value = 0;
+        float delayed = 0;
+		if( t < end){
+			value = get_sample((int) t);
+		}
+        if ( t - delayInSamples >=0) {
+            //delayed = w2->get_sample((int) t - delayInSamples);
+			delayed = get_sample((int) t - delayInSamples);
+        }
+        w2->add_sample((int) ((1-echoAmount)*value+ echoAmount * delayed));
+        t++;
+    }
+	for(;t<lastSample;t++){
+		int value = get_sample((int) t);
+		w2->add_sample(value);
+	}
 
     w2->updateHeader();
 

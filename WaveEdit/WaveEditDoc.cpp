@@ -22,9 +22,6 @@
 IMPLEMENT_DYNCREATE(CWaveEditDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CWaveEditDoc, CDocument)
-	ON_COMMAND(ID_TOOLS_SPEEDUP, &CWaveEditDoc::OnToolsSpeedup)
-	ON_COMMAND(ID_TOOLS_SLOWDOWN, &CWaveEditDoc::OnToolsSlowdown)
-	ON_COMMAND(ID_TOOLS_ECHO, &CWaveEditDoc::OnToolsEcho)
 	ON_COMMAND(ID_TOOLS_STOP, &CWaveEditDoc::OnToolsStop)
 END_MESSAGE_MAP()
 
@@ -151,34 +148,27 @@ void CWaveEditDoc::Play()
 	wave->play();
 }
 
-
-void CWaveEditDoc::OnToolsSpeedup()
+void CWaveEditDoc::Speedup(int start, int end)
 {
 	//WaveFile *newWave = wave->multiply_freq(2, 0);
-	int begin = 0;
-	int end = 0;
-	//view->GetSelection(begin, end);
-	WaveFile *newWave = wave->multiply_freq(2, 0);
+	WaveFile *newWave = wave->multiply_freq(2, start, end);
 	delete wave;
 	wave = newWave;
 }
 
-
-void CWaveEditDoc::OnToolsSlowdown()
+void CWaveEditDoc::Slowdown(int start, int end)
 {
-	WaveFile *newWave = wave->multiply_freq(0.5, 0);
+	WaveFile *newWave = wave->multiply_freq(0.5, start, end);
 	delete wave;
 	wave = newWave;
 }
 
-
-void CWaveEditDoc::OnToolsEcho()
+void CWaveEditDoc::Echo(int start, int end)
 {
-	WaveFile *newWave = wave->echo(0.5, 750);
+	WaveFile *newWave = wave->echo(0.5, 750, start, end);
 	delete wave;
 	wave = newWave;
 }
-
 
 void CWaveEditDoc::OnToolsStop()
 {

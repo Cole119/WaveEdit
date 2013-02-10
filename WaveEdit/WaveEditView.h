@@ -12,6 +12,7 @@ private:
 	bool mousePressed;
 	int startSelection;
 	int endSelection;
+	double drawScale;
 
 protected: // create from serialization only
 	CWaveEditView();
@@ -59,6 +60,12 @@ public:
 	afx_msg void OnEditCopy();
 	afx_msg void OnEditPaste();
 	afx_msg void OnToolsPlay();
+	afx_msg void OnToolsSpeedup();
+	afx_msg void OnToolsSlowdown();
+	afx_msg void OnToolsEcho();
+	afx_msg void OnZoomoutX1();
+	afx_msg void OnZoomoutX2();
+	afx_msg void OnZoomoutX5();
 };
 
 #ifndef _DEBUG  // debug version in WaveEditView.cpp

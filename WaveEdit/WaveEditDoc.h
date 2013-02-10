@@ -20,6 +20,9 @@ protected: // create from serialization only
 public:
 	void SetView(CWaveEditView *view);
 	void Play();
+	void Speedup(int start, int end);
+	void Slowdown(int start, int end);
+	void Echo(int start, int end);
 // Operations
 public:
 
@@ -51,8 +54,5 @@ protected:
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
 public:
-	afx_msg void OnToolsSpeedup();
-	afx_msg void OnToolsSlowdown();
-	afx_msg void OnToolsEcho();
 	afx_msg void OnToolsStop();
 };

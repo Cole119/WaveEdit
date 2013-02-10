@@ -165,6 +165,12 @@ BEGIN
             MENUITEM "x2",                          ID_ZOOMIN_X2
             MENUITEM "x5",                          ID_ZOOMIN_X5
         END
+        POPUP "Zoom Out"
+        BEGIN
+            MENUITEM "x1.5",                        ID_ZOOMOUT_X1
+            MENUITEM "x2",                          ID_ZOOMOUT_X2
+            MENUITEM "x5",                          ID_ZOOMOUT_X5
+        END
     END
     POPUP "Tools"
     BEGIN
