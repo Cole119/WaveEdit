@@ -42,6 +42,8 @@ BEGIN_MESSAGE_MAP(CWaveEditView, CScrollView)
 	ON_COMMAND(ID_ZOOMOUT_X1, &CWaveEditView::OnZoomoutX1)
 	ON_COMMAND(ID_ZOOMOUT_X2, &CWaveEditView::OnZoomoutX2)
 	ON_COMMAND(ID_ZOOMOUT_X5, &CWaveEditView::OnZoomoutX5)
+	ON_COMMAND(ID_EDIT_UNDO, &CWaveEditView::OnEditUndo)
+	ON_COMMAND(ID_EDIT_REDO32785, &CWaveEditView::OnEditRedo)
 END_MESSAGE_MAP()
 
 // CWaveEditView construction/destruction
@@ -279,26 +281,10 @@ void CWaveEditView::OnEditCut()
 	CSize size = GetTotalSize();
 
     // Scale the start and end of the selection.
-    //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
 	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
-
-    // Scale the start and end of the selection.
-    //double endms = (1000.0 * wave->lastSample /wave->sampleRate) * this->endSelection/rect.Width();
 	double endms = wave->lastSample * (double)this->endSelection/(double)size.cx;
     
-	// Clear the clipboard
-	delete theApp.clipboard;
-    // Copy first the fragment
-    theApp.clipboard = wave->get_fragment(startms, endms);
-
-    // Copy the clipboard
-    WaveFile * w2 = wave->remove_fragment(startms, endms);
-
-    // Remove old wave
-    delete wave;
-
-    // Substitute old wave with new one
-    pDoc->wave = w2;
+	pDoc->Cut(startms, endms);
 
 	endSelection = startSelection;
     // Update window
@@ -324,19 +310,10 @@ void CWaveEditView::OnEditCopy()
     GetClientRect(rect);
 
 	CSize size = GetTotalSize();
-
-    // Scale the start and end of the selection.
-    //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
 	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
-
-    // Scale the start and end of the selection.
-    //double endms = (1000.0 * wave->lastSample /wave->sampleRate) * this->endSelection/rect.Width();
 	double endms = wave->lastSample * (double)this->endSelection/(double)size.cx;
     
-	// Clear the clipboard
-	delete theApp.clipboard;
-    // Copy first the fragment
-    theApp.clipboard = wave->get_fragment(startms, endms);
+	pDoc->Copy(startms, endms);
 }
 
 void CWaveEditView::OnEditPaste()
@@ -361,9 +338,8 @@ void CWaveEditView::OnEditPaste()
     // Scale the start and end of the selection.
     //double startms = (1000.0 * wave->lastSample /wave->sampleRate) * this->startSelection/rect.Width();
 	double startms = wave->lastSample * (double)this->startSelection/(double)size.cx;
-	WaveFile * wave2 = wave->insert_fragment(theApp.clipboard, startms);
-	delete wave;
-	pDoc->wave = wave2;
+	pDoc->Paste(startms);
+
 	RedrawWindow();
 }
 
@@ -443,5 +419,22 @@ void CWaveEditView::OnZoomoutX2()
 void CWaveEditView::OnZoomoutX5()
 {
 	zoom = zoom/5.0;
+	RedrawWindow();
+}
+
+
+
+void CWaveEditView::OnEditUndo()
+{
+	CWaveEditDoc *doc = GetDocument();
+	doc->Undo();
+	RedrawWindow();
+}
+
+
+void CWaveEditView::OnEditRedo()
+{
+	CWaveEditDoc *doc = GetDocument();
+	doc->Redo();
 	RedrawWindow();
 }

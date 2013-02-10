@@ -18,6 +18,7 @@ class CWaveEditApp : public CWinApp
 {
 public:
 	CWaveEditApp();
+	~CWaveEditApp();
 	WaveFile * clipboard;
 
 // Overrides

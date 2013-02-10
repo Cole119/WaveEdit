@@ -6,12 +6,18 @@
 #pragma once
 
 #include "WaveFile.h"
+#include <stack>
 
 class CWaveEditDoc : public CDocument
 {
 	friend class CWaveEditView;
     WaveFile *wave;
 	CWaveEditView *view;
+	std::stack<WaveFile *> undoStack;
+	std::stack<WaveFile *> redoStack;
+
+private:
+	void eraseStack(std::stack<WaveFile *> &stack);
 protected: // create from serialization only
 	CWaveEditDoc();
 	DECLARE_DYNCREATE(CWaveEditDoc)
@@ -23,6 +29,11 @@ public:
 	void Speedup(int start, int end);
 	void Slowdown(int start, int end);
 	void Echo(int start, int end);
+	void Undo();
+	void Redo();
+	void Copy(int start, int end);
+	void Cut(int start, int end);
+	void Paste(int index);
 // Operations
 public:
 

@@ -34,8 +34,26 @@ CWaveEditDoc::CWaveEditDoc()
 	wave = new WaveFile();
 }
 
+void CWaveEditDoc::eraseStack(std::stack<WaveFile *> &stack){
+	while(!stack.empty()){
+		delete stack.top();
+		stack.pop();
+	}
+}
+
 CWaveEditDoc::~CWaveEditDoc()
 {
+	/*while(!undoStack.empty()){
+		delete undoStack.top();
+		undoStack.pop();
+	}
+	while(!redoStack.empty()){
+		delete redoStack.top();
+		redoStack.pop();
+	}*/
+	eraseStack(undoStack);
+	eraseStack(redoStack);
+
 	delete wave;
 }
 
@@ -152,25 +170,88 @@ void CWaveEditDoc::Speedup(int start, int end)
 {
 	//WaveFile *newWave = wave->multiply_freq(2, 0);
 	WaveFile *newWave = wave->multiply_freq(2, start, end);
-	delete wave;
+	//delete wave;
+	undoStack.push(wave);
+	eraseStack(redoStack);
 	wave = newWave;
 }
 
 void CWaveEditDoc::Slowdown(int start, int end)
 {
 	WaveFile *newWave = wave->multiply_freq(0.5, start, end);
-	delete wave;
+	//delete wave;
+	undoStack.push(wave);
+	eraseStack(redoStack);
 	wave = newWave;
 }
 
 void CWaveEditDoc::Echo(int start, int end)
 {
 	WaveFile *newWave = wave->echo(0.5, 750, start, end);
-	delete wave;
+	//delete wave;
+	undoStack.push(wave);
+	eraseStack(redoStack);
 	wave = newWave;
 }
 
 void CWaveEditDoc::OnToolsStop()
 {
 	wave->stop();
+}
+
+void CWaveEditDoc::Undo()
+{
+	if(undoStack.empty()){
+		return;
+	}
+
+	//delete wave;
+	redoStack.push(wave);
+	wave = undoStack.top();
+	undoStack.pop();
+}
+
+void CWaveEditDoc::Redo()
+{
+	if(redoStack.empty()){
+		return;
+	}
+
+	//delete wave;
+	undoStack.push(wave);
+	wave = redoStack.top();
+	redoStack.pop();
+}
+
+void CWaveEditDoc::Copy(int start, int end)
+{
+	// Clear the clipboard
+	delete theApp.clipboard;
+    // Copy first the fragment
+    theApp.clipboard = wave->get_fragment(start, end);
+}
+
+void CWaveEditDoc::Cut(int start, int end)
+{
+	Copy(start, end);
+
+    // Copy the clipboard
+    WaveFile * w2 = wave->remove_fragment(start, end);
+
+    // Remove old wave
+    //delete wave;
+	undoStack.push(wave);
+	eraseStack(redoStack);
+
+    // Substitute old wave with new one
+    wave = w2;
+}
+
+void CWaveEditDoc::Paste(int index)
+{
+	WaveFile * wave2 = wave->insert_fragment(theApp.clipboard, index);
+	//delete wave;
+	undoStack.push(wave);
+	eraseStack(redoStack);
+	wave = wave2;
 }

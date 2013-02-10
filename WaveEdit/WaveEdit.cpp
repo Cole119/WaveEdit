@@ -46,8 +46,15 @@ CWaveEditApp::CWaveEditApp()
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("WaveEdit.AppID.NoVersion"));
 
-	// TODO: add construction code here,
+	clipboard = NULL;
 	// Place all significant initialization in InitInstance
+}
+
+CWaveEditApp::~CWaveEditApp()
+{
+	if(clipboard){
+		delete clipboard;
+	}
 }
 
 // The one and only CWaveEditApp object
@@ -122,7 +129,9 @@ BOOL CWaveEditApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-
+	// Don't display a new MDI child window during startup
+	if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)
+		cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.

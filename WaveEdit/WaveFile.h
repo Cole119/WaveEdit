@@ -103,4 +103,5 @@ public:
 
 	void decreaseVolume(double amount);
 	void increaseVolume(double amount);
+
 };
